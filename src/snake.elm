@@ -4,14 +4,17 @@ import Playground exposing (..)
 
 
 main =
-    game view update 0
+    game view update { position = 0, speed = 1 }
 
 
-view computer offset =
+view computer memory =
     [ square blue 30
-        |> moveRight offset
+        |> moveRight memory.position
     ]
 
 
-update computer offset =
-    offset + 1
+update computer memory =
+    { memory
+        | position =
+            memory.position + memory.speed
+    }
