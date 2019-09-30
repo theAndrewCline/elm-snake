@@ -21,6 +21,7 @@ main =
         , speed = 1
         , gameOver = False
         , direction = "right"
+        , points = 0
         }
 
 
@@ -31,6 +32,8 @@ view computer memory =
     else
         [ square blue 30
             |> move memory.positionX memory.positionY
+        , words black ("Points: " ++ String.fromInt memory.points)
+            |> move -(computer.screen.width / 2 - 40) (computer.screen.height / 2 - 20)
         ]
 
 
@@ -46,16 +49,28 @@ update computer memory =
         { memory | gameOver = True }
 
     else if computer.keyboard.up then
-        { memory | direction = "up" }
+        { memory
+            | direction = "up"
+            , positionY = memory.positionY + memory.speed
+        }
 
     else if computer.keyboard.down then
-        { memory | direction = "down" }
+        { memory
+            | direction = "down"
+            , positionY = memory.positionY - memory.speed
+        }
 
     else if computer.keyboard.right then
-        { memory | direction = "right" }
+        { memory
+            | direction = "right"
+            , positionX = memory.positionX + memory.speed
+        }
 
     else if computer.keyboard.left then
-        { memory | direction = "left" }
+        { memory
+            | direction = "left"
+            , positionX = memory.positionX - memory.speed
+        }
 
     else if memory.direction == "up" then
         { memory
