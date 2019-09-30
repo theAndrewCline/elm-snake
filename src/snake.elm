@@ -3,10 +3,21 @@ module Snake exposing (main)
 import Playground exposing (..)
 
 
+type alias Memory =
+    { positionX : Number
+    , positionY : Number
+    , speed : Number
+    , gameOver : Bool
+    , direction : String
+    }
+
+
 main =
     game view
         update
-        { position = 0
+        { positionX = 0
+        , positionY = 0
+        , position = 0
         , speed = 1
         , gameOver = False
         , direction = "right"
@@ -19,30 +30,19 @@ view computer memory =
 
     else
         [ square blue 30
-            |> handleDirection memory.direction memory.position
+            |> move memory.positionX memory.positionY
         ]
 
 
-handleDirection direction =
-    case direction of
-        "right" ->
-            moveRight
-
-        "left" ->
-            moveLeft
-
-        "up" ->
-            moveUp
-
-        "down" ->
-            moveDown
-
-        _ ->
-            moveLeft
-
-
 update computer memory =
-    if computer.screen.width / 2 == memory.position then
+    if
+        computer.screen.width
+            / 2
+            == abs memory.positionX
+            || computer.screen.height
+            / 2
+            == abs memory.positionY
+    then
         { memory | gameOver = True }
 
     else if computer.keyboard.up then
@@ -57,8 +57,25 @@ update computer memory =
     else if computer.keyboard.left then
         { memory | direction = "left" }
 
-    else
+    else if memory.direction == "up" then
         { memory
-            | position =
-                memory.position + memory.speed
+            | positionY = memory.positionY + memory.speed
         }
+
+    else if memory.direction == "down" then
+        { memory
+            | positionY = memory.positionY - memory.speed
+        }
+
+    else if memory.direction == "right" then
+        { memory
+            | positionX = memory.positionX + memory.speed
+        }
+
+    else if memory.direction == "left" then
+        { memory
+            | positionX = memory.positionX - memory.speed
+        }
+
+    else
+        memory
