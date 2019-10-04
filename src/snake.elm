@@ -3,12 +3,19 @@ module Snake exposing (main)
 import Playground exposing (..)
 
 
+type alias Food =
+    { x : Int
+    , y : Int
+    }
+
+
 type alias Memory =
     { positionX : Number
     , positionY : Number
     , speed : Number
     , gameOver : Bool
     , direction : String
+    , food : Food
     }
 
 
@@ -22,6 +29,10 @@ main =
         , gameOver = False
         , direction = "right"
         , points = 0
+        , food =
+            { x = 100
+            , y = 0
+            }
         }
 
 
@@ -32,6 +43,8 @@ view computer memory =
     else
         [ square blue 30
             |> move memory.positionX memory.positionY
+        , square red 30
+            |> move memory.food.x memory.food.y
         , words black ("Points: " ++ String.fromInt memory.points)
             |> move -(computer.screen.width / 2 - 40) (computer.screen.height / 2 - 20)
         ]
