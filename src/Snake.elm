@@ -4,18 +4,19 @@ import Playground exposing (..)
 
 
 type alias Food =
-    { x : Int
-    , y : Int
+    { x : Float
+    , y : Float
     }
 
 
 type alias Memory =
-    { positionX : Number
-    , positionY : Number
-    , speed : Number
+    { positionX : Float
+    , positionY : Float
+    , speed : Float
     , gameOver : Bool
     , direction : String
     , food : Food
+    , points : Int
     }
 
 
@@ -24,7 +25,6 @@ main =
         update
         { positionX = 0
         , positionY = 0
-        , position = 0
         , speed = 1
         , gameOver = False
         , direction = "right"
@@ -36,9 +36,13 @@ main =
         }
 
 
+view : Computer -> Memory -> List Shape
 view computer memory =
     if memory.gameOver == True then
-        [ words red "Game Over" ]
+        [ words red "Game Over"
+        , words black ("Score: " ++ String.fromInt memory.points)
+            |> move 0 -20
+        ]
 
     else
         [ square blue 30
@@ -50,6 +54,7 @@ view computer memory =
         ]
 
 
+update : Computer -> Memory -> Memory
 update computer memory =
     if
         computer.screen.width
@@ -88,7 +93,10 @@ update computer memory =
     else if coordsAreClose memory.positionX memory.positionY memory.food.x memory.food.y then
         { memory
             | points = memory.points + 10
-            , food = { x = -300, y = 300 }
+            , food =
+                { x = cos (spin 0.1 computer.time) * (computer.screen.width / 2)
+                , y = cos (spin 0.1 computer.time) * (computer.screen.height / 2)
+                }
         }
 
     else if memory.direction == "up" then
