@@ -119,25 +119,21 @@ checkIfDirectionChanged computer memory =
     if computer.keyboard.up then
         { memory
             | direction = "up"
-            , positionY = memory.positionY + memory.speed
         }
 
     else if computer.keyboard.down then
         { memory
             | direction = "down"
-            , positionY = memory.positionY - memory.speed
         }
 
     else if computer.keyboard.right then
         { memory
             | direction = "right"
-            , positionX = memory.positionX + memory.speed
         }
 
     else if computer.keyboard.left then
         { memory
             | direction = "left"
-            , positionX = memory.positionX - memory.speed
         }
 
     else
