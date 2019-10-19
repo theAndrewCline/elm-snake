@@ -56,50 +56,24 @@ view computer memory =
 
 update : Computer -> Memory -> Memory
 update computer memory =
-    if
-        computer.screen.width
-            / 2
-            == abs memory.positionX
-            || computer.screen.height
-            / 2
-            == abs memory.positionY
-    then
-        { memory | gameOver = True }
+    checkIfGameOver computer memory
+        |> checkDirection computer
+        |> checkIfDirectionChanged computer
+        |> checkIfFoodConsumed computer
 
-    else if computer.keyboard.up then
-        { memory
-            | direction = "up"
-            , positionY = memory.positionY + memory.speed
-        }
 
-    else if computer.keyboard.down then
-        { memory
-            | direction = "down"
-            , positionY = memory.positionY - memory.speed
-        }
+coordsAreClose : Float -> Float -> Float -> Float -> Bool
+coordsAreClose x1 y1 x2 y2 =
+    if abs (x1 - x2) < 10 && abs (y1 - y2) < 10 then
+        True
 
-    else if computer.keyboard.right then
-        { memory
-            | direction = "right"
-            , positionX = memory.positionX + memory.speed
-        }
+    else
+        False
 
-    else if computer.keyboard.left then
-        { memory
-            | direction = "left"
-            , positionX = memory.positionX - memory.speed
-        }
 
-    else if coordsAreClose memory.positionX memory.positionY memory.food.x memory.food.y then
-        { memory
-            | points = memory.points + 10
-            , food =
-                { x = cos (spin 0.1 computer.time) * (computer.screen.width / 2)
-                , y = cos (spin 0.1 computer.time) * (computer.screen.height / 2)
-                }
-        }
-
-    else if memory.direction == "up" then
+checkDirection : Computer -> Memory -> Memory
+checkDirection computer memory =
+    if memory.direction == "up" then
         { memory
             | positionY = memory.positionY + memory.speed
         }
@@ -123,10 +97,62 @@ update computer memory =
         memory
 
 
-coordsAreClose : Float -> Float -> Float -> Float -> Bool
-coordsAreClose x1 y1 x2 y2 =
-    if abs (x1 - x2) < 10 && abs (y1 - y2) < 10 then
-        True
+checkIfGameOver : Computer -> Memory -> Memory
+checkIfGameOver computer memory =
+    if
+        computer.screen.width
+            / 2
+            < abs memory.positionX
+            || computer.screen.height
+            / 2
+            < abs memory.positionY
+    then
+        { memory | gameOver = True }
 
     else
-        False
+        memory
+
+
+checkIfDirectionChanged : Computer -> Memory -> Memory
+checkIfDirectionChanged computer memory =
+    if computer.keyboard.up then
+        { memory
+            | direction = "up"
+            , positionY = memory.positionY + memory.speed
+        }
+
+    else if computer.keyboard.down then
+        { memory
+            | direction = "down"
+            , positionY = memory.positionY - memory.speed
+        }
+
+    else if computer.keyboard.right then
+        { memory
+            | direction = "right"
+            , positionX = memory.positionX + memory.speed
+        }
+
+    else if computer.keyboard.left then
+        { memory
+            | direction = "left"
+            , positionX = memory.positionX - memory.speed
+        }
+
+    else
+        memory
+
+
+checkIfFoodConsumed : Computer -> Memory -> Memory
+checkIfFoodConsumed computer memory =
+    if coordsAreClose memory.positionX memory.positionY memory.food.x memory.food.y then
+        { memory
+            | points = memory.points + 10
+            , food =
+                { x = cos (spin 0.1 computer.time) * (computer.screen.width / 2)
+                , y = cos (spin 0.1 computer.time) * (computer.screen.height / 2)
+                }
+        }
+
+    else
+        memory
