@@ -59,6 +59,7 @@ update computer memory =
     checkIfGameOver computer memory
         |> checkDirection computer
         |> checkIfDirectionChanged computer
+        |> checkIfSpeedShouldIncrease computer
         |> checkIfFoodConsumed computer
 
 
@@ -149,6 +150,17 @@ checkIfFoodConsumed computer memory =
                 { x = cos (spin 0.1 computer.time) * (computer.screen.width / 2)
                 , y = cos (spin 0.1 computer.time) * (computer.screen.height / 2)
                 }
+        }
+
+    else
+        memory
+
+
+checkIfSpeedShouldIncrease : Computer -> Memory -> Memory
+checkIfSpeedShouldIncrease computer memory =
+    if remainderBy 3 memory.points == 0 && memory.points /= 0 then
+        { memory
+            | speed = 1 + (toFloat memory.points / 60)
         }
 
     else
