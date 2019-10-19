@@ -73,28 +73,29 @@ coordsAreClose x1 y1 x2 y2 =
 
 checkDirection : Computer -> Memory -> Memory
 checkDirection computer memory =
-    if memory.direction == "up" then
-        { memory
-            | positionY = memory.positionY + memory.speed
-        }
+    case memory.direction of
+        "up" ->
+            { memory
+                | positionY = memory.positionY + memory.speed
+            }
 
-    else if memory.direction == "down" then
-        { memory
-            | positionY = memory.positionY - memory.speed
-        }
+        "down" ->
+            { memory
+                | positionY = memory.positionY - memory.speed
+            }
 
-    else if memory.direction == "right" then
-        { memory
-            | positionX = memory.positionX + memory.speed
-        }
+        "right" ->
+            { memory
+                | positionX = memory.positionX + memory.speed
+            }
 
-    else if memory.direction == "left" then
-        { memory
-            | positionX = memory.positionX - memory.speed
-        }
+        "left" ->
+            { memory
+                | positionX = memory.positionX - memory.speed
+            }
 
-    else
-        memory
+        default ->
+            memory
 
 
 checkIfGameOver : Computer -> Memory -> Memory
