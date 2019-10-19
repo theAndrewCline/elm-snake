@@ -56,11 +56,11 @@ view computer memory =
 
 update : Computer -> Memory -> Memory
 update computer memory =
-    checkIfGameOver computer memory
-        |> checkDirection computer
-        |> checkIfDirectionChanged computer
-        |> checkIfSpeedShouldIncrease computer
-        |> checkIfFoodConsumed computer
+    endGame computer memory
+        |> handleMovement computer
+        |> handleKeyPress computer
+        |> speedIncreaseRules computer
+        |> consumeFood computer
 
 
 coordsAreClose : Float -> Float -> Float -> Float -> Bool
@@ -72,8 +72,8 @@ coordsAreClose x1 y1 x2 y2 =
         False
 
 
-checkDirection : Computer -> Memory -> Memory
-checkDirection computer memory =
+handleMovement : Computer -> Memory -> Memory
+handleMovement computer memory =
     case memory.direction of
         "up" ->
             { memory
@@ -99,8 +99,8 @@ checkDirection computer memory =
             memory
 
 
-checkIfGameOver : Computer -> Memory -> Memory
-checkIfGameOver computer memory =
+endGame : Computer -> Memory -> Memory
+endGame computer memory =
     if
         computer.screen.width
             / 2
@@ -115,8 +115,8 @@ checkIfGameOver computer memory =
         memory
 
 
-checkIfDirectionChanged : Computer -> Memory -> Memory
-checkIfDirectionChanged computer memory =
+handleKeyPress : Computer -> Memory -> Memory
+handleKeyPress computer memory =
     if computer.keyboard.up then
         { memory
             | direction = "up"
@@ -141,8 +141,8 @@ checkIfDirectionChanged computer memory =
         memory
 
 
-checkIfFoodConsumed : Computer -> Memory -> Memory
-checkIfFoodConsumed computer memory =
+consumeFood : Computer -> Memory -> Memory
+consumeFood computer memory =
     if coordsAreClose memory.positionX memory.positionY memory.food.x memory.food.y then
         { memory
             | points = memory.points + 10
@@ -156,8 +156,8 @@ checkIfFoodConsumed computer memory =
         memory
 
 
-checkIfSpeedShouldIncrease : Computer -> Memory -> Memory
-checkIfSpeedShouldIncrease computer memory =
+speedIncreaseRules : Computer -> Memory -> Memory
+speedIncreaseRules computer memory =
     if remainderBy 3 memory.points == 0 && memory.points /= 0 then
         { memory
             | speed = 1 + (toFloat memory.points / 60)
